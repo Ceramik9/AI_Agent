@@ -20,6 +20,7 @@ def main():
     #Parser
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
 
     # Conversation history
@@ -35,8 +36,10 @@ def main():
         raise RuntimeError("Token usage is None")
 
     # Console outputs
-    print(f"Prompt tokens: {usage.prompt_token_count}") # Print prompt token usage metadata
-    print(f"Response tokens: {usage.candidates_token_count}") # Print response token usage metadata
+    if args.verbose is True:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {usage.prompt_token_count}") # Print prompt token usage metadata
+        print(f"Response tokens: {usage.candidates_token_count}") # Print response token usage metadata
     print(response.text) # Print response text
 
 
