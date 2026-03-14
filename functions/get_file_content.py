@@ -1,5 +1,7 @@
 import os
-MAX_CHARS = 10000 #I should move this value to config file
+
+# Constants
+MAX_CHARS = 10000
 
 def get_file_content(working_dir, file_path):
     try:
@@ -19,7 +21,7 @@ def get_file_content(working_dir, file_path):
         # Read file and save content to string
         with open(target_file, "r") as f:
             file_content_string = f.read(MAX_CHARS)
-            # After reading the first MAX_CHARS...
+            # Add message fter reading the first MAX_CHARS...
             if f.read(1):
                 file_content_string += f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
         print(file_content_string)
