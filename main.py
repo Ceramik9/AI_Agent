@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from google import genai
 import argparse
 from google.genai import types
-
+from prompts import system_prompt
+from functions.call_function import available_functions
 
 def main():
     print("Hello from ai-agent!")
@@ -28,7 +29,7 @@ def main():
 
     # Generate response prompt
     response = client.models.generate_content(
-        model = "gemini-2.5-flash", contents = messages
+        model="gemini-2.5-flash", contents=messages, config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt)
 )   
     #Generate prompt and response token usage metadata
     usage = response.usage_metadata
@@ -40,7 +41,11 @@ def main():
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {usage.prompt_token_count}") # Print prompt token usage metadata
         print(f"Response tokens: {usage.candidates_token_count}") # Print response token usage metadata
-    print(response.text) # Print response text
+    if response.function_calls:
+        for function_call in response.function_calls:
+            print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print(response.text) # Print response text
 
 
 if __name__ == "__main__":
