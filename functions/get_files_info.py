@@ -1,5 +1,4 @@
 import os
-from google import genai
 from google.genai import types
 
 schema_get_files_info = types.FunctionDeclaration(
@@ -8,7 +7,7 @@ schema_get_files_info = types.FunctionDeclaration(
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "directory": types.Schema(
+            "dir": types.Schema(
                 type=types.Type.STRING,
                 description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
             ),
@@ -31,11 +30,14 @@ def get_files_info(working_dir, dir="."):
             return f'Error: "{target_dir}" is not a directory'
     
         # Successful return result
+        results = []
         for item in os.listdir(target_dir):
-            item_size = os.path.getsize(os.path.join(target_dir, item))
-            item_type = os.path.isdir(os.path.join(target_dir, item))
-            return f"- {item}: file_size={item_size} bytes, is_dir={item_type}"
+            item_path = os.path.join(target_dir, item)
+            item_size = os.path.getsize(item_path)
+            item_type = os.path.isdir(item_path)
+            results.append(f"- {item}: file_size={item_size} bytes, is_dir={item_type}")
+        return "\n".join(results)
     except Exception as e:
-            return f"Error: {e}"
+        return f"Error: {e}"
     return
 
